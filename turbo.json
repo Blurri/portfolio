@@ -1,6 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
+  "globalEnv": ["DATABASE_URI", "PAYLOAD_SECRET"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -14,8 +15,21 @@
       "dependsOn": ["^check-types"]
     },
     "dev": {
+      "dependsOn": ["@workspace/docker#up"],
       "cache": false,
       "persistent": true
+    },
+    "up": {
+      "cache": false
+    },
+    "down": {
+      "cache": false
+    },
+    "logs": {
+      "cache": false
+    },
+    "reset": {
+      "cache": false
     }
   }
 }
