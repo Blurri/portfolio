@@ -27,5 +27,8 @@ Your `tailwind.config.ts` and `globals.css` are already set up to use the compon
 To use the components in your app, import them from the `ui` package.
 
 ```tsx
-import { Button } from "@workspace/ui/components/button"
+import { Button } from '@workspace/ui/components/button'
 ```
+
+
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/Blurri/portfolio?utm_source=oss&utm_medium=github&utm_campaign=Blurri%2Fportfolio&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
