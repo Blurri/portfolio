@@ -1,11 +1,16 @@
 import { CollectionConfig } from 'payload'
-import { defineCollection, createUploadField } from '../../lib/payload-helpers'
+import { defineCollection } from '@/lib/payload-helpers'
 
+/**
+ * PageContent collection for managing static content on pages
+ * This collection is part of the Content group because it stores
+ * content blocks that are displayed on various pages of the site
+ */
 export const PageContent: CollectionConfig = defineCollection({
   slug: 'page-content',
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'section', 'order'],
+    defaultColumns: ['title', 'slug', 'section', 'updatedAt'],
     group: 'Content',
   },
   access: {
@@ -16,6 +21,9 @@ export const PageContent: CollectionConfig = defineCollection({
       name: 'title',
       type: 'text',
       required: true,
+      admin: {
+        description: 'Name of this content block (for admin reference)',
+      },
     },
     {
       name: 'slug',
@@ -24,7 +32,7 @@ export const PageContent: CollectionConfig = defineCollection({
       unique: true,
       admin: {
         description:
-          'Unique identifier for this content block (e.g., "home-hero", "about-intro")',
+          'Unique identifier for this content block (e.g., "home-hero")',
       },
     },
     {
@@ -39,7 +47,7 @@ export const PageContent: CollectionConfig = defineCollection({
         { label: 'Global', value: 'global' },
       ],
       admin: {
-        description: 'Which page or section this content belongs to',
+        description: 'Which section of the site this content belongs to',
       },
     },
     {
@@ -57,13 +65,14 @@ export const PageContent: CollectionConfig = defineCollection({
         description: 'Optional subtitle or tagline',
       },
     },
-    createUploadField({
+    {
       name: 'image',
       type: 'upload',
+      relationTo: 'media',
       admin: {
-        description: 'Optional image for this section',
+        description: 'Optional image for this content block',
       },
-    }),
+    },
     {
       name: 'callToAction',
       type: 'group',
@@ -74,7 +83,6 @@ export const PageContent: CollectionConfig = defineCollection({
         {
           name: 'text',
           type: 'text',
-          required: true,
           admin: {
             description: 'Button text',
           },
@@ -82,7 +90,6 @@ export const PageContent: CollectionConfig = defineCollection({
         {
           name: 'link',
           type: 'text',
-          required: true,
           admin: {
             description: 'URL or path the button links to',
           },
@@ -90,14 +97,14 @@ export const PageContent: CollectionConfig = defineCollection({
         {
           name: 'style',
           type: 'select',
-          defaultValue: 'primary',
           options: [
             { label: 'Primary', value: 'primary' },
             { label: 'Secondary', value: 'secondary' },
             { label: 'Tertiary', value: 'tertiary' },
           ],
+          defaultValue: 'primary',
           admin: {
-            description: 'Button style',
+            description: 'Visual style of the button',
           },
         },
       ],
@@ -107,28 +114,31 @@ export const PageContent: CollectionConfig = defineCollection({
       type: 'number',
       defaultValue: 0,
       admin: {
-        description: 'Display order (lower numbers appear first)',
+        description:
+          'Display order within the section (lower numbers appear first)',
+        position: 'sidebar',
       },
     },
     {
       name: 'metadata',
       type: 'group',
       admin: {
-        description: "SEO metadata for this section (if it's a full page)",
+        description: 'SEO metadata for this content',
+        position: 'sidebar',
       },
       fields: [
         {
           name: 'metaTitle',
           type: 'text',
           admin: {
-            description: 'Page title for SEO (if different from main title)',
+            description: 'Custom page title for SEO',
           },
         },
         {
           name: 'metaDescription',
           type: 'textarea',
           admin: {
-            description: 'Description for SEO',
+            description: 'Custom page description for SEO',
           },
         },
         {
@@ -141,4 +151,5 @@ export const PageContent: CollectionConfig = defineCollection({
       ],
     },
   ],
+  timestamps: true,
 })

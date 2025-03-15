@@ -1,6 +1,11 @@
 import { CollectionConfig } from 'payload'
-import { defineCollection, createUploadField } from '../../lib/payload-helpers'
+import { defineCollection, createUploadField } from '@/lib/payload-helpers'
 
+/**
+ * Social Links collection for managing social media profiles
+ * This collection is part of the Settings group because it configures
+ * global social media links that appear across the site
+ */
 export const SocialLinks: CollectionConfig = defineCollection({
   slug: 'social-links',
   admin: {

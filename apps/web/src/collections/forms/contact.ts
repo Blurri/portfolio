@@ -1,6 +1,12 @@
-import { CollectionConfig } from 'payload'
+import { CollectionConfig, Access } from 'payload'
+import { defineCollection } from '@/lib/payload-helpers'
 
-export const Contact: CollectionConfig = {
+/**
+ * Contact collection for handling contact form submissions
+ * This collection is part of the Forms group because it stores
+ * user-submitted form data rather than content managed by admins
+ */
+export const Contact: CollectionConfig = defineCollection({
   slug: 'contact',
   admin: {
     useAsTitle: 'name',
@@ -8,7 +14,11 @@ export const Contact: CollectionConfig = {
     group: 'Forms',
   },
   access: {
-    read: () => true,
+    read: ({ req }) => {
+      // Only authenticated users with admin role can read contact submissions
+      return Boolean(req.user && req.user.role === 'admin')
+    },
+    // Anyone can create a contact submission (public form)
     create: () => true,
   },
   fields: [
@@ -66,4 +76,4 @@ export const Contact: CollectionConfig = {
     },
   ],
   timestamps: true,
-}
+})

@@ -66,17 +66,16 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    projects: Project;
-    experience: Experience;
-    blog: Blog;
-    'page-content': PageContent;
-    testimonials: Testimonial;
     categories: Category;
     technologies: Technology;
+    experience: Experience;
+    'page-content': PageContent;
+    projects: Project;
+    testimonials: Testimonial;
     media: Media;
-    users: User;
-    'social-links': SocialLink;
     settings: Setting;
+    'social-links': SocialLink;
+    users: User;
     contact: Contact;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -84,17 +83,16 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    projects: ProjectsSelect<false> | ProjectsSelect<true>;
-    experience: ExperienceSelect<false> | ExperienceSelect<true>;
-    blog: BlogSelect<false> | BlogSelect<true>;
-    'page-content': PageContentSelect<false> | PageContentSelect<true>;
-    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     technologies: TechnologiesSelect<false> | TechnologiesSelect<true>;
+    experience: ExperienceSelect<false> | ExperienceSelect<true>;
+    'page-content': PageContentSelect<false> | PageContentSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    users: UsersSelect<false> | UsersSelect<true>;
-    'social-links': SocialLinksSelect<false> | SocialLinksSelect<true>;
     settings: SettingsSelect<false> | SettingsSelect<true>;
+    'social-links': SocialLinksSelect<false> | SocialLinksSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
     contact: ContactSelect<false> | ContactSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -131,6 +129,118 @@ export interface UserAuthOperations {
     email: string;
     password: string;
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  name: string;
+  /**
+   * Used to determine the display order of categories
+   */
+  order?: number | null;
+  /**
+   * Technologies that belong to this category
+   */
+  technologies?: (number | Technology)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "technologies".
+ */
+export interface Technology {
+  id: number;
+  name: string;
+  /**
+   * Years of experience with this technology
+   */
+  years: number;
+  /**
+   * The category this technology belongs to
+   */
+  category: number | Category;
+  /**
+   * Used to determine the display order within a category
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "experience".
+ */
+export interface Experience {
+  id: number;
+  /**
+   * Name of the company or organization
+   */
+  company: string;
+  /**
+   * Job title or position held
+   */
+  title: string;
+  /**
+   * When this position started
+   */
+  startDate: string;
+  /**
+   * When this position ended (leave blank if current)
+   */
+  endDate?: string | null;
+  /**
+   * Check if this is your current position
+   */
+  current?: boolean | null;
+  /**
+   * Description of responsibilities and achievements
+   */
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Technologies used in this role
+   */
+  technologies?: (number | Technology)[] | null;
+  /**
+   * Projects completed during this role
+   */
+  projects?: (number | Project)[] | null;
+  /**
+   * Display order (lower numbers appear first)
+   */
+  order?: number | null;
+  /**
+   * Logo of the company or organization
+   */
+  companyLogo?: (number | null) | Media;
+  /**
+   * Key achievements or responsibilities
+   */
+  highlights?:
+    | {
+        highlight: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -295,234 +405,20 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "technologies".
- */
-export interface Technology {
-  id: number;
-  name: string;
-  /**
-   * Years of experience with this technology
-   */
-  years: number;
-  /**
-   * The category this technology belongs to
-   */
-  category: number | Category;
-  /**
-   * Used to determine the display order within a category
-   */
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories".
- */
-export interface Category {
-  id: number;
-  name: string;
-  /**
-   * Used to determine the display order of categories
-   */
-  order?: number | null;
-  /**
-   * Technologies that belong to this category
-   */
-  technologies?: (number | Technology)[] | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "experience".
- */
-export interface Experience {
-  id: number;
-  company: string;
-  /**
-   * Your job title or role
-   */
-  title: string;
-  /**
-   * City, state, country, or remote
-   */
-  location?: string | null;
-  /**
-   * When you started this position
-   */
-  startDate: string;
-  /**
-   * When you ended this position (leave blank if current)
-   */
-  endDate?: string | null;
-  /**
-   * This is my current position
-   */
-  current?: boolean | null;
-  /**
-   * Description of your responsibilities and achievements
-   */
-  description: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  /**
-   * Technologies used in this role
-   */
-  technologies?: (number | Technology)[] | null;
-  /**
-   * Projects completed during this role
-   */
-  projects?: (number | Project)[] | null;
-  /**
-   * Display order (lower numbers appear first)
-   */
-  order?: number | null;
-  /**
-   * Company logo
-   */
-  companyLogo?: (number | null) | Media;
-  /**
-   * Key achievements or responsibilities
-   */
-  highlights?:
-    | {
-        highlight: string;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "blog".
- */
-export interface Blog {
-  id: number;
-  title: string;
-  /**
-   * URL-friendly identifier (e.g., "my-first-blog-post")
-   */
-  slug: string;
-  status: 'draft' | 'published' | 'archived';
-  /**
-   * Who wrote this article
-   */
-  author: number | User;
-  /**
-   * When this article was or will be published
-   */
-  publishedDate?: string | null;
-  /**
-   * Categories this article belongs to
-   */
-  categories?: (number | Category)[] | null;
-  /**
-   * Main image for the article
-   */
-  featuredImage?: (number | null) | Media;
-  /**
-   * Brief summary of the article (appears in previews)
-   */
-  summary: string;
-  /**
-   * The main content of the article
-   */
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  /**
-   * Related articles to suggest to readers
-   */
-  relatedPosts?: (number | Blog)[] | null;
-  /**
-   * Technologies discussed in this article
-   */
-  technologies?: (number | Technology)[] | null;
-  /**
-   * Projects related to this article
-   */
-  projects?: (number | Project)[] | null;
-  /**
-   * Feature this article on the homepage
-   */
-  featured?: boolean | null;
-  /**
-   * SEO metadata for this article
-   */
-  metadata?: {
-    /**
-     * Title for SEO (if different from main title)
-     */
-    metaTitle?: string | null;
-    /**
-     * Description for SEO
-     */
-    metaDescription?: string | null;
-    /**
-     * Comma-separated keywords for SEO
-     */
-    keywords?: string | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: number;
-  role: 'admin' | 'editor' | 'viewer';
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  password?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "page-content".
  */
 export interface PageContent {
   id: number;
+  /**
+   * Name of this content block (for admin reference)
+   */
   title: string;
   /**
-   * Unique identifier for this content block (e.g., "home-hero", "about-intro")
+   * Unique identifier for this content block (e.g., "home-hero")
    */
   slug: string;
   /**
-   * Which page or section this content belongs to
+   * Which section of the site this content belongs to
    */
   section: 'home' | 'about' | 'features' | 'contact' | 'global';
   /**
@@ -548,40 +444,40 @@ export interface PageContent {
    */
   subtitle?: string | null;
   /**
-   * Optional image for this section
+   * Optional image for this content block
    */
   image?: (number | null) | Media;
   /**
    * Optional call-to-action button
    */
-  callToAction: {
+  callToAction?: {
     /**
      * Button text
      */
-    text: string;
+    text?: string | null;
     /**
      * URL or path the button links to
      */
-    link: string;
+    link?: string | null;
     /**
-     * Button style
+     * Visual style of the button
      */
     style?: ('primary' | 'secondary' | 'tertiary') | null;
   };
   /**
-   * Display order (lower numbers appear first)
+   * Display order within the section (lower numbers appear first)
    */
   order?: number | null;
   /**
-   * SEO metadata for this section (if it's a full page)
+   * SEO metadata for this content
    */
   metadata?: {
     /**
-     * Page title for SEO (if different from main title)
+     * Custom page title for SEO
      */
     metaTitle?: string | null;
     /**
-     * Description for SEO
+     * Custom page description for SEO
      */
     metaDescription?: string | null;
     /**
@@ -603,27 +499,23 @@ export interface Testimonial {
    */
   name: string;
   /**
-   * Job title of the person
-   */
-  title?: string | null;
-  /**
-   * Company or organization of the person
+   * Company or organization the person represents
    */
   company?: string | null;
   /**
+   * Job title or position of the person
+   */
+  title?: string | null;
+  /**
    * The testimonial text
    */
-  testimonial: string;
+  quote: string;
   /**
    * Photo of the person (optional)
    */
-  photo?: (number | null) | Media;
+  image?: (number | null) | Media;
   /**
-   * Rating from 1-5 stars (optional)
-   */
-  rating?: number | null;
-  /**
-   * Feature this testimonial prominently
+   * Feature this testimonial prominently on the site
    */
   featured?: boolean | null;
   /**
@@ -634,70 +526,6 @@ export interface Testimonial {
    * Display order (lower numbers appear first)
    */
   order?: number | null;
-  /**
-   * LinkedIn profile URL (optional)
-   */
-  linkedIn?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "social-links".
- */
-export interface SocialLink {
-  id: number;
-  /**
-   * Social media platform
-   */
-  platform:
-    | 'github'
-    | 'linkedin'
-    | 'twitter'
-    | 'instagram'
-    | 'youtube'
-    | 'medium'
-    | 'devto'
-    | 'stackoverflow'
-    | 'codepen'
-    | 'website'
-    | 'other';
-  /**
-   * If "Other" is selected above, specify the platform name
-   */
-  customPlatform?: string | null;
-  /**
-   * Full URL to your profile (including https://)
-   */
-  url: string;
-  /**
-   * Icon to display for this link
-   */
-  icon?: ('default' | 'custom') | null;
-  /**
-   * Upload a custom icon (SVG preferred)
-   */
-  customIcon?: (number | null) | Media;
-  /**
-   * Display name for this link (optional)
-   */
-  displayName?: string | null;
-  /**
-   * Your username on this platform (optional)
-   */
-  username?: string | null;
-  /**
-   * Whether this link is active and should be displayed
-   */
-  active?: boolean | null;
-  /**
-   * Display order (lower numbers appear first)
-   */
-  order?: number | null;
-  /**
-   * Feature this link prominently
-   */
-  featured?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -853,6 +681,84 @@ export interface Setting {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "social-links".
+ */
+export interface SocialLink {
+  id: number;
+  /**
+   * Social media platform
+   */
+  platform:
+    | 'github'
+    | 'linkedin'
+    | 'twitter'
+    | 'instagram'
+    | 'youtube'
+    | 'medium'
+    | 'devto'
+    | 'stackoverflow'
+    | 'codepen'
+    | 'website'
+    | 'other';
+  /**
+   * If "Other" is selected above, specify the platform name
+   */
+  customPlatform?: string | null;
+  /**
+   * Full URL to your profile (including https://)
+   */
+  url: string;
+  /**
+   * Icon to display for this link
+   */
+  icon?: ('default' | 'custom') | null;
+  /**
+   * Upload a custom icon (SVG preferred)
+   */
+  customIcon?: (number | null) | Media;
+  /**
+   * Display name for this link (optional)
+   */
+  displayName?: string | null;
+  /**
+   * Your username on this platform (optional)
+   */
+  username?: string | null;
+  /**
+   * Whether this link is active and should be displayed
+   */
+  active?: boolean | null;
+  /**
+   * Display order (lower numbers appear first)
+   */
+  order?: number | null;
+  /**
+   * Feature this link prominently
+   */
+  featured?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  role: 'admin' | 'editor' | 'viewer';
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contact".
  */
 export interface Contact {
@@ -884,26 +790,6 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'projects';
-        value: number | Project;
-      } | null)
-    | ({
-        relationTo: 'experience';
-        value: number | Experience;
-      } | null)
-    | ({
-        relationTo: 'blog';
-        value: number | Blog;
-      } | null)
-    | ({
-        relationTo: 'page-content';
-        value: number | PageContent;
-      } | null)
-    | ({
-        relationTo: 'testimonials';
-        value: number | Testimonial;
-      } | null)
-    | ({
         relationTo: 'categories';
         value: number | Category;
       } | null)
@@ -912,20 +798,36 @@ export interface PayloadLockedDocument {
         value: number | Technology;
       } | null)
     | ({
+        relationTo: 'experience';
+        value: number | Experience;
+      } | null)
+    | ({
+        relationTo: 'page-content';
+        value: number | PageContent;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: number | Project;
+      } | null)
+    | ({
+        relationTo: 'testimonials';
+        value: number | Testimonial;
+      } | null)
+    | ({
         relationTo: 'media';
         value: number | Media;
       } | null)
     | ({
-        relationTo: 'users';
-        value: number | User;
+        relationTo: 'settings';
+        value: number | Setting;
       } | null)
     | ({
         relationTo: 'social-links';
         value: number | SocialLink;
       } | null)
     | ({
-        relationTo: 'settings';
-        value: number | Setting;
+        relationTo: 'users';
+        value: number | User;
       } | null)
     | ({
         relationTo: 'contact';
@@ -975,6 +877,82 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T;
+  order?: T;
+  technologies?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "technologies_select".
+ */
+export interface TechnologiesSelect<T extends boolean = true> {
+  name?: T;
+  years?: T;
+  category?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "experience_select".
+ */
+export interface ExperienceSelect<T extends boolean = true> {
+  company?: T;
+  title?: T;
+  startDate?: T;
+  endDate?: T;
+  current?: T;
+  description?: T;
+  technologies?: T;
+  projects?: T;
+  order?: T;
+  companyLogo?: T;
+  highlights?:
+    | T
+    | {
+        highlight?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-content_select".
+ */
+export interface PageContentSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  section?: T;
+  content?: T;
+  subtitle?: T;
+  image?: T;
+  callToAction?:
+    | T
+    | {
+        text?: T;
+        link?: T;
+        style?: T;
+      };
+  order?: T;
+  metadata?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        keywords?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "projects_select".
  */
 export interface ProjectsSelect<T extends boolean = true> {
@@ -1019,123 +997,16 @@ export interface ProjectsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "experience_select".
- */
-export interface ExperienceSelect<T extends boolean = true> {
-  company?: T;
-  title?: T;
-  location?: T;
-  startDate?: T;
-  endDate?: T;
-  current?: T;
-  description?: T;
-  technologies?: T;
-  projects?: T;
-  order?: T;
-  companyLogo?: T;
-  highlights?:
-    | T
-    | {
-        highlight?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "blog_select".
- */
-export interface BlogSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  status?: T;
-  author?: T;
-  publishedDate?: T;
-  categories?: T;
-  featuredImage?: T;
-  summary?: T;
-  content?: T;
-  relatedPosts?: T;
-  technologies?: T;
-  projects?: T;
-  featured?: T;
-  metadata?:
-    | T
-    | {
-        metaTitle?: T;
-        metaDescription?: T;
-        keywords?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "page-content_select".
- */
-export interface PageContentSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  section?: T;
-  content?: T;
-  subtitle?: T;
-  image?: T;
-  callToAction?:
-    | T
-    | {
-        text?: T;
-        link?: T;
-        style?: T;
-      };
-  order?: T;
-  metadata?:
-    | T
-    | {
-        metaTitle?: T;
-        metaDescription?: T;
-        keywords?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "testimonials_select".
  */
 export interface TestimonialsSelect<T extends boolean = true> {
   name?: T;
-  title?: T;
   company?: T;
-  testimonial?: T;
-  photo?: T;
-  rating?: T;
+  title?: T;
+  quote?: T;
+  image?: T;
   featured?: T;
   project?: T;
-  order?: T;
-  linkedIn?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories_select".
- */
-export interface CategoriesSelect<T extends boolean = true> {
-  name?: T;
-  order?: T;
-  technologies?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "technologies_select".
- */
-export interface TechnologiesSelect<T extends boolean = true> {
-  name?: T;
-  years?: T;
-  category?: T;
   order?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1192,40 +1063,6 @@ export interface MediaSelect<T extends boolean = true> {
               filename?: T;
             };
       };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
- */
-export interface UsersSelect<T extends boolean = true> {
-  role?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "social-links_select".
- */
-export interface SocialLinksSelect<T extends boolean = true> {
-  platform?: T;
-  customPlatform?: T;
-  url?: T;
-  icon?: T;
-  customIcon?: T;
-  displayName?: T;
-  username?: T;
-  active?: T;
-  order?: T;
-  featured?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1289,6 +1126,40 @@ export interface SettingsSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "social-links_select".
+ */
+export interface SocialLinksSelect<T extends boolean = true> {
+  platform?: T;
+  customPlatform?: T;
+  url?: T;
+  icon?: T;
+  customIcon?: T;
+  displayName?: T;
+  username?: T;
+  active?: T;
+  order?: T;
+  featured?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users_select".
+ */
+export interface UsersSelect<T extends boolean = true> {
+  role?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -1,5 +1,5 @@
 import type { Payload } from 'payload'
-import type { Category, Technology } from '../payload-types'
+import type { Category, Technology, Experience } from '../payload-types'
 import { devUser } from './helpers/credentials'
 
 /**
@@ -133,6 +133,9 @@ export const seed = async (
     }
   }
 
+  // Seed work experience
+  await seedWorkExperience(payload)
+
   console.log('✅ Database seeded successfully!')
 }
 
@@ -143,7 +146,6 @@ async function resetDatabase(payload: Payload): Promise<void> {
   // Define the order of collections to delete
   // Delete dependent collections first before their references
   const collectionOrder = [
-    'blog',
     'testimonials',
     'page-content',
     'contact',
@@ -173,7 +175,7 @@ async function resetDatabase(payload: Payload): Promise<void> {
         try {
           // Find documents in the collection (always fetch first page as we're deleting them)
           const { docs, totalDocs } = await payload.find({
-            collection: collectionName as ValidCollection,
+            collection: collectionName,
             limit: 100, // Use a smaller batch size for better performance
             page: 1, // Always get the first page as we're deleting documents
           })
@@ -187,7 +189,7 @@ async function resetDatabase(payload: Payload): Promise<void> {
           // Delete each document in the current batch
           for (const doc of docs) {
             await payload.delete({
-              collection: collectionName as ValidCollection,
+              collection: collectionName,
               id: doc.id,
             })
             deletedCount++
@@ -310,5 +312,176 @@ async function seedTechnology(
   } catch (error) {
     console.error(`Error seeding technology ${name}:`, error)
     return null
+  }
+}
+
+/**
+ * Seed work experience data based on resume
+ */
+async function seedWorkExperience(payload: Payload): Promise<void> {
+  console.log('🧑‍💼 Seeding work experience...')
+
+  // Define work experience entries with basic data
+  const experienceData = [
+    {
+      company: 'Panter AG',
+      title: 'Software Engineer',
+      location: 'Switzerland',
+      startDate: '2016-05-01',
+      endDate: '2025-04-30',
+      current: false,
+      descriptionText:
+        'At Panter AG, I was responsible for developing and maintaining modern web and mobile applications. My main focus was frontend development using React, React Native, Next.js, Vue.js, and AngularJS, while also working on fullstack solutions using Node.js, GraphQL (Apollo, Pothos), and Prisma ORM. I managed database operations with PostgreSQL, SQL, and MongoDB and played a key role in implementing CI/CD pipelines, cloud solutions with Google Cloud and Kubernetes, and scalable deployments.',
+      highlights: [
+        'CO2 tracking apps (React Native, Elixir/Phoenix backend)',
+        'Hackathon platform for remote collaboration during the COVID-19 pandemic',
+        'Customer advisory software (Vue.js frontend)',
+        '3D gallery showcasing historical data using React-Three-Fiber and Blender',
+        'Cycling promotion platforms (Velomittwoch, Cyclomania, Bike to Work) using Meteor.js, React, and Node.js',
+      ],
+      order: 1,
+    },
+    {
+      company: 'PM Medici',
+      title: 'Software Engineer',
+      location: 'Switzerland',
+      startDate: '2014-01-01',
+      endDate: '2016-01-01',
+      current: false,
+      descriptionText:
+        'At PM Medici, I developed backend and frontend solutions in Java, PHP, JavaScript, and Swift. A key project was building an iOS application with Beacon integration, which enabled precise location-based features. Additionally, I was responsible for maintaining and optimizing existing software solutions to improve performance and scalability.',
+      highlights: [
+        'iOS application with Beacon integration',
+        'Backend and frontend solutions in Java, PHP, JavaScript, and Swift',
+        'Software optimization for improved performance and scalability',
+      ],
+      order: 2,
+    },
+    {
+      company: 'DWA AG',
+      title: 'Software Engineer',
+      location: 'Switzerland',
+      startDate: '2013-01-01',
+      endDate: '2014-01-01',
+      current: false,
+      descriptionText:
+        'At DWA AG, I worked on web applications using VB.Net, assisted with customer onboarding, and developed iOS clients to extend the functionality of existing software. This role deepened my expertise in software integration and client-facing technical support.',
+      highlights: [
+        'Web applications using VB.Net',
+        'Customer onboarding assistance',
+        'iOS client development',
+        'Software integration and client-facing technical support',
+      ],
+      order: 3,
+    },
+    {
+      company: 'Rucotec',
+      title: 'Intern - Application Developer',
+      location: 'Switzerland',
+      startDate: '2012-01-01',
+      endDate: '2013-01-01',
+      current: false,
+      descriptionText:
+        'During my internship at Rucotec, I contributed to the development of a medical web application for stem cell extraction. This project involved WebObjects (Java) for backend development and the creation of an iOS client to interface with the system.',
+      highlights: [
+        'Medical web application for stem cell extraction',
+        'Backend development with WebObjects (Java)',
+        'iOS client development',
+      ],
+      order: 4,
+    },
+  ]
+
+  // Create or update each experience entry
+  for (const expData of experienceData) {
+    try {
+      const {
+        company,
+        title,
+        location,
+        startDate,
+        endDate,
+        current,
+        descriptionText,
+        highlights,
+        order,
+      } = expData
+
+      // Format the description as a simple rich text object
+      const description = {
+        root: {
+          children: [
+            {
+              children: [
+                {
+                  text: descriptionText,
+                },
+              ],
+              type: 'p',
+              version: 1,
+            },
+          ],
+          direction: null,
+          format: '' as const,
+          indent: 0,
+          type: 'root',
+          version: 1,
+        },
+      }
+
+      // Format the highlights as objects
+      const formattedHighlights = highlights.map((highlight) => ({
+        highlight,
+      }))
+
+      // Create the experience data object with proper typing
+      const experienceEntry = {
+        company,
+        title,
+        location,
+        startDate,
+        endDate,
+        current,
+        description,
+        highlights: formattedHighlights,
+        order,
+      }
+
+      // Check if the experience already exists
+      const { docs: existingExperiences } = await payload.find({
+        collection: 'experience',
+        where: {
+          company: {
+            equals: company,
+          },
+          title: {
+            equals: title,
+          },
+        },
+      })
+
+      if (existingExperiences.length === 0) {
+        await payload.create({
+          collection: 'experience',
+          data: experienceEntry,
+        })
+        console.log(`✅ Created experience: ${title} at ${company}`)
+      } else {
+        const id = existingExperiences[0]?.id
+        if (id) {
+          await payload.update({
+            collection: 'experience',
+            id,
+            data: experienceEntry,
+          })
+          console.log(`🔄 Updated experience: ${title} at ${company}`)
+        }
+      }
+    } catch (error) {
+      console.error(
+        `❌ Error seeding experience for ${expData.company}:`,
+        error,
+      )
+    }
   }
 }

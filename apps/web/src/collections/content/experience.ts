@@ -1,15 +1,16 @@
 import { CollectionConfig } from 'payload'
-import {
-  defineCollection,
-  createUploadField,
-  createRelationshipField,
-} from '../../lib/payload-helpers'
+import { defineCollection } from '@/lib/payload-helpers'
 
+/**
+ * Experience collection for managing work history and professional experience
+ * This collection is part of the Content group because it stores
+ * career information that showcases professional background
+ */
 export const Experience: CollectionConfig = defineCollection({
   slug: 'experience',
   admin: {
     useAsTitle: 'company',
-    defaultColumns: ['company', 'title', 'startDate', 'current'],
+    defaultColumns: ['company', 'title', 'startDate', 'endDate'],
     group: 'Content',
   },
   access: {
@@ -20,20 +21,16 @@ export const Experience: CollectionConfig = defineCollection({
       name: 'company',
       type: 'text',
       required: true,
+      admin: {
+        description: 'Name of the company or organization',
+      },
     },
     {
       name: 'title',
       type: 'text',
       required: true,
       admin: {
-        description: 'Your job title or role',
-      },
-    },
-    {
-      name: 'location',
-      type: 'text',
-      admin: {
-        description: 'City, state, country, or remote',
+        description: 'Job title or position held',
       },
     },
     {
@@ -41,23 +38,22 @@ export const Experience: CollectionConfig = defineCollection({
       type: 'date',
       required: true,
       admin: {
+        description: 'When this position started',
         date: {
           pickerAppearance: 'monthOnly',
           displayFormat: 'MMM yyyy',
         },
-        description: 'When you started this position',
       },
     },
     {
       name: 'endDate',
       type: 'date',
       admin: {
+        description: 'When this position ended (leave blank if current)',
         date: {
           pickerAppearance: 'monthOnly',
           displayFormat: 'MMM yyyy',
         },
-        description: 'When you ended this position (leave blank if current)',
-        condition: (data: { current?: boolean }) => !data.current,
       },
     },
     {
@@ -65,7 +61,7 @@ export const Experience: CollectionConfig = defineCollection({
       type: 'checkbox',
       defaultValue: false,
       admin: {
-        description: 'This is my current position',
+        description: 'Check if this is your current position',
       },
     },
     {
@@ -73,10 +69,10 @@ export const Experience: CollectionConfig = defineCollection({
       type: 'richText',
       required: true,
       admin: {
-        description: 'Description of your responsibilities and achievements',
+        description: 'Description of responsibilities and achievements',
       },
     },
-    createRelationshipField({
+    {
       name: 'technologies',
       type: 'relationship',
       relationTo: 'technologies',
@@ -84,8 +80,8 @@ export const Experience: CollectionConfig = defineCollection({
       admin: {
         description: 'Technologies used in this role',
       },
-    }),
-    createRelationshipField({
+    },
+    {
       name: 'projects',
       type: 'relationship',
       relationTo: 'projects',
@@ -93,22 +89,24 @@ export const Experience: CollectionConfig = defineCollection({
       admin: {
         description: 'Projects completed during this role',
       },
-    }),
+    },
     {
       name: 'order',
       type: 'number',
       defaultValue: 0,
       admin: {
         description: 'Display order (lower numbers appear first)',
+        position: 'sidebar',
       },
     },
-    createUploadField({
+    {
       name: 'companyLogo',
       type: 'upload',
+      relationTo: 'media',
       admin: {
-        description: 'Company logo',
+        description: 'Logo of the company or organization',
       },
-    }),
+    },
     {
       name: 'highlights',
       type: 'array',
@@ -124,4 +122,5 @@ export const Experience: CollectionConfig = defineCollection({
       ],
     },
   ],
+  timestamps: true,
 })

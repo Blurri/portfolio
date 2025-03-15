@@ -1,15 +1,16 @@
 import { CollectionConfig } from 'payload'
-import {
-  defineCollection,
-  createUploadField,
-  createRelationshipField,
-} from '../../lib/payload-helpers'
+import { defineCollection } from '@/lib/payload-helpers'
 
+/**
+ * Testimonials collection for managing client and user testimonials
+ * This collection is part of the Content group because it stores
+ * social proof content that is displayed throughout the site
+ */
 export const Testimonials: CollectionConfig = defineCollection({
   slug: 'testimonials',
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'company', 'featured', 'createdAt'],
+    defaultColumns: ['name', 'company', 'featured', 'updatedAt'],
     group: 'Content',
   },
   access: {
@@ -25,41 +26,33 @@ export const Testimonials: CollectionConfig = defineCollection({
       },
     },
     {
-      name: 'title',
-      type: 'text',
-      admin: {
-        description: 'Job title of the person',
-      },
-    },
-    {
       name: 'company',
       type: 'text',
       admin: {
-        description: 'Company or organization of the person',
+        description: 'Company or organization the person represents',
       },
     },
     {
-      name: 'testimonial',
+      name: 'title',
+      type: 'text',
+      admin: {
+        description: 'Job title or position of the person',
+      },
+    },
+    {
+      name: 'quote',
       type: 'textarea',
       required: true,
       admin: {
         description: 'The testimonial text',
       },
     },
-    createUploadField({
-      name: 'photo',
+    {
+      name: 'image',
       type: 'upload',
+      relationTo: 'media',
       admin: {
         description: 'Photo of the person (optional)',
-      },
-    }),
-    {
-      name: 'rating',
-      type: 'number',
-      min: 1,
-      max: 5,
-      admin: {
-        description: 'Rating from 1-5 stars (optional)',
       },
     },
     {
@@ -67,19 +60,20 @@ export const Testimonials: CollectionConfig = defineCollection({
       type: 'checkbox',
       defaultValue: false,
       admin: {
-        description: 'Feature this testimonial prominently',
+        description: 'Feature this testimonial prominently on the site',
         position: 'sidebar',
       },
     },
-    createRelationshipField({
+    {
       name: 'project',
       type: 'relationship',
       relationTo: 'projects',
+      hasMany: false,
       admin: {
         description: 'Related project (if applicable)',
         position: 'sidebar',
       },
-    }),
+    },
     {
       name: 'order',
       type: 'number',
@@ -87,13 +81,6 @@ export const Testimonials: CollectionConfig = defineCollection({
       admin: {
         description: 'Display order (lower numbers appear first)',
         position: 'sidebar',
-      },
-    },
-    {
-      name: 'linkedIn',
-      type: 'text',
-      admin: {
-        description: 'LinkedIn profile URL (optional)',
       },
     },
   ],

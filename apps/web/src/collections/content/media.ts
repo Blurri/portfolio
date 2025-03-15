@@ -1,12 +1,17 @@
 import { CollectionConfig } from 'payload'
-import { defineCollection } from '../../lib/payload-helpers'
+import { defineCollection } from '@/lib/payload-helpers'
 
+/**
+ * Media collection for managing images and other media files
+ * This collection is part of the Content group because it provides
+ * media assets that are used across the site's content
+ */
 export const Media: CollectionConfig = defineCollection({
   slug: 'media',
   admin: {
     useAsTitle: 'alt',
     defaultColumns: ['alt', 'caption', 'createdAt'],
-    group: 'Media',
+    group: 'Content',
   },
   access: {
     read: () => true,

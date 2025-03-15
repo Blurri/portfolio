@@ -1,10 +1,18 @@
 import { CollectionConfig } from 'payload'
+import { defineCollection } from '@/lib/payload-helpers'
 
-export const Users: CollectionConfig = {
+/**
+ * Users collection for authentication and user management
+ * This collection is part of the Settings group because it manages
+ * user accounts and permissions rather than public-facing content
+ */
+export const Users: CollectionConfig = defineCollection({
   slug: 'users',
   auth: true,
   admin: {
     useAsTitle: 'email',
+    defaultColumns: ['email', 'role', 'createdAt'],
+    group: 'Settings',
   },
   access: {
     // Only authenticated users can read users
@@ -70,4 +78,4 @@ export const Users: CollectionConfig = {
       },
     },
   ],
-}
+})

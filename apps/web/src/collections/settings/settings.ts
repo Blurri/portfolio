@@ -1,6 +1,11 @@
 import { CollectionConfig } from 'payload'
-import { defineCollection, createUploadField } from '../../lib/payload-helpers'
+import { defineCollection, createUploadField } from '@/lib/payload-helpers'
 
+/**
+ * Settings collection for global site configuration
+ * This collection is part of the Settings group because it manages
+ * global site settings like title, logo, and navigation
+ */
 export const Settings: CollectionConfig = defineCollection({
   slug: 'settings',
   admin: {

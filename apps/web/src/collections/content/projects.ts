@@ -3,8 +3,13 @@ import {
   defineCollection,
   createUploadField,
   createRelationshipField,
-} from '../../lib/payload-helpers'
+} from '@/lib/payload-helpers'
 
+/**
+ * Projects collection for showcasing portfolio work
+ * This collection is part of the Content group because it represents
+ * the main portfolio items that demonstrate skills and experience
+ */
 export const Projects: CollectionConfig = defineCollection({
   slug: 'projects',
   admin: {
