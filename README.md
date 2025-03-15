@@ -80,6 +80,22 @@ This project uses [direnv](https://direnv.net/) to automatically:
 - Switch to the correct Node.js version (from `.nvmrc`)
 - Load environment variables and secrets
 
+### Environment Variables
+
+#### Required Variables
+
+- `DATABASE_URI`: Connection string for the PostgreSQL database
+- `PAYLOAD_SECRET`: Secret key used by PayloadCMS for encryption and security
+
+#### Optional Variables
+
+- `PAYLOAD_SEED`: When set to `'true'`, triggers database seeding during PayloadCMS initialization
+  - **Purpose**: Populates the database with initial data (categories, technologies, and a development user)
+  - **Effect**: When `true`, it will reset the database and seed predefined data
+  - **Warning**: Setting this to `'true'` will delete all existing data in the collections before seeding
+
+For detailed information about environment variables, including usage guidelines and examples, see our [Environment Variables Documentation](./docs/environment-variables.md).
+
 ### Setup
 
 1. Make sure direnv is installed:

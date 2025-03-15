@@ -150,21 +150,47 @@ async function resetDatabase(payload: Payload): Promise<void> {
     try {
       console.log(`🗑️  Deleting all documents from ${collectionName}...`)
 
-      // Find all documents in the collection
-      const { docs } = await payload.find({
-        collection: collectionName,
-        limit: 1000, // Set a high limit to get all documents
-      })
+      let hasMoreDocs = true
+      let deletedCount = 0
 
-      // Delete each document
-      for (const doc of docs) {
-        await payload.delete({
+      // Continue fetching and deleting documents until no more remain
+      while (hasMoreDocs) {
+        // Find documents in the collection (always fetch first page as we're deleting them)
+        const { docs, totalDocs } = await payload.find({
           collection: collectionName,
-          id: doc.id,
+          limit: 100, // Use a smaller batch size for better performance
+          page: 1, // Always get the first page as we're deleting documents
         })
+
+        // If no documents found, we're done with this collection
+        if (docs.length === 0) {
+          hasMoreDocs = false
+          break
+        }
+
+        // Delete each document in the current batch
+        for (const doc of docs) {
+          await payload.delete({
+            collection: collectionName,
+            id: doc.id,
+          })
+          deletedCount++
+        }
+
+        // Log progress for large collections
+        console.log(
+          `Progress: Deleted ${deletedCount} documents from ${collectionName}...`,
+        )
+
+        // Check if we've deleted all documents
+        if (deletedCount >= totalDocs) {
+          hasMoreDocs = false
+        }
       }
 
-      console.log(`✅ Deleted all documents from ${collectionName}`)
+      console.log(
+        `✅ Deleted all documents (${deletedCount} total) from ${collectionName}`,
+      )
     } catch (error) {
       console.error(
         `❌ Error deleting documents from ${collectionName}:`,

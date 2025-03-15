@@ -19,8 +19,8 @@ export default function RotatingTechBadge({
     const interval = setInterval(() => {
       setTextIndex(
         (prevIndex) =>
-          (typeof prevIndex === 'number' ? prevIndex : 0) +
-          (1 % textOptions.length),
+          ((typeof prevIndex === 'number' ? prevIndex : 0) + 1) %
+          textOptions.length,
       )
     }, 3000)
 

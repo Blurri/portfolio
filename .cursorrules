@@ -85,7 +85,7 @@ rule "server-component-return-type" {
 # Enforce proper client component props typing
 rule "client-component-props-typing" {
   description = "Ensure client components have properly typed props"
-  pattern = "'use client'[\\s\\S]*export\\s+default\\s+function\\s+[^(]+\\(\\{[^}]*\\}\\)\\s*\\{"
+  pattern = "'use client'[\\s\\S]*export\\s+default\\s+function\\s+[^(]+\\((?:(?:\\{[^}]*\\}(?:\\s*:\\s*[^{]+)?)|(?:[a-zA-Z_$][a-zA-Z0-9_$]*(?:\\s*:\\s*[^{]+)?))\\s*\\)"
   message = "Client components should have properly typed props with a dedicated interface or type"
   severity = "warning"
 } 
