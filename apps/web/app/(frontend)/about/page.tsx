@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { Heading, Text } from '@workspace/ui/components/typography'
 import { Section } from '@workspace/ui/components/section'
+import ExperienceList from '@/components/experience'
 
 export default function AboutPage() {
   return (
@@ -44,97 +45,7 @@ export default function AboutPage() {
 
       {/* Career Journey */}
       <Section title="Career Journey" size="sm">
-        <div className="neu-flat dark:dark-neu-flat rounded-2xl p-6 md:p-8">
-          <div className="space-y-8">
-            {[
-              {
-                period: '2020 - Present',
-                role: 'Lead Full Stack Developer',
-                company: 'Enterprise Solutions Inc.',
-                description:
-                  'Leading development of cloud-native applications using React, Next.js, GraphQL, and Google Cloud Platform. Implementing CI/CD pipelines and managing Kubernetes clusters for scalable deployments.',
-                technologies: [
-                  'React',
-                  'Next.js',
-                  'GraphQL',
-                  'Node.js',
-                  'GCP',
-                  'Kubernetes',
-                ],
-              },
-              {
-                period: '2016 - 2020',
-                role: 'Senior Frontend Developer',
-                company: 'Web Innovations Ltd.',
-                description:
-                  "Developed complex single-page applications using React and Meteor. Implemented GraphQL APIs and contributed to the company's component library. Mentored junior developers and led frontend architecture decisions.",
-                technologies: [
-                  'React',
-                  'Meteor',
-                  'GraphQL',
-                  'JavaScript',
-                  'CSS3',
-                  'MongoDB',
-                ],
-              },
-              {
-                period: '2012 - 2016',
-                role: 'Frontend Developer',
-                company: 'Digital Solutions Co.',
-                description:
-                  'Built responsive web applications using Angular and jQuery. Worked on transitioning legacy applications to modern frameworks and improved performance of existing systems.',
-                technologies: [
-                  'Angular',
-                  'jQuery',
-                  'JavaScript',
-                  'HTML5',
-                  'CSS3',
-                  'REST APIs',
-                ],
-              },
-              {
-                period: '2008 - 2012',
-                role: 'Web Developer',
-                company: 'Creative Web Agency',
-                description:
-                  'Developed interactive websites using JavaScript, jQuery, and Flash. Created custom animations and user interfaces for various client projects.',
-                technologies: [
-                  'JavaScript',
-                  'jQuery',
-                  'Flash',
-                  'HTML',
-                  'CSS',
-                  'PHP',
-                ],
-              },
-            ].map((job, index) => (
-              <div key={index} className="flex flex-col md:flex-row gap-6">
-                <div className="md:w-1/3">
-                  <div className="neu-pressed dark:dark-neu-pressed rounded-[20px] p-5">
-                    <div className="text-purple-600 dark:text-purple-400 font-medium mb-1">
-                      {job.period}
-                    </div>
-                    <Heading level="h3">{job.role}</Heading>
-                    <Text variant="muted">{job.company}</Text>
-                  </div>
-                </div>
-                <div className="md:w-2/3">
-                  <Text className="mb-4">{job.description}</Text>
-                  <div className="flex flex-wrap gap-2">
-                    {job.technologies.map((tech, techIndex) => (
-                      <span
-                        key={techIndex}
-                        className="neu-button dark:dark-neu-button rounded-full px-3 py-1 text-sm text-gray-700 dark:text-gray-300 hover:scale-105 transition-transform cursor-default"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <ExperienceList />
       </Section>
 
       {/* Technical Philosophy */}
@@ -251,21 +162,17 @@ export default function AboutPage() {
           ].map((skillSet, index) => (
             <div
               key={index}
-              className="neu-pressed dark:dark-neu-pressed rounded-xl p-4"
+              className="neu-flat dark:dark-neu-flat rounded-2xl p-6"
             >
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 neu-circle-sm dark:dark-neu-circle-sm rounded-full flex items-center justify-center">
-                  {skillSet.icon}
-                </div>
-                <Heading level="h3" className="mb-0">
-                  {skillSet.category}
-                </Heading>
+              <div className="w-12 h-12 neu-circle dark:dark-neu-circle rounded-full flex items-center justify-center mb-4">
+                {skillSet.icon}
               </div>
-              <ul className="space-y-1 text-gray-600 dark:text-gray-300">
+              <Heading level="h3">{skillSet.category}</Heading>
+              <ul className="mt-4 space-y-2">
                 {skillSet.skills.map((skill, skillIndex) => (
-                  <li key={skillIndex} className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
-                    {skill}
+                  <li key={skillIndex} className="flex items-center">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+                    <Text>{skill}</Text>
                   </li>
                 ))}
               </ul>
