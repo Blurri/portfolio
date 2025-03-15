@@ -1,23 +1,11 @@
-'use client'
-import { ArrowRight, Code, Database, Heading2, Server } from 'lucide-react'
+import { ArrowRight, Code, Database, Server } from 'lucide-react'
 import TechStack from '@/components/tech-stack'
-import { useState, useEffect } from 'react'
 import { NeuContainer } from '@workspace/ui/components/neu-container'
 import { Heading, Text } from '@workspace/ui/components/typography'
 import { NeuButton } from '@workspace/ui/components/neu-button'
+import RotatingTechBadge from '@/components/rotating-tech-badge'
 
 export default function Home() {
-  const [textIndex, setTextIndex] = useState(0)
-  const textOptions = ['JS', 'TS', 'DB', 'GQL', 'API', 'AI']
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTextIndex((prevIndex) => (prevIndex + 1) % textOptions.length)
-    }, 3000)
-
-    return () => clearInterval(interval)
-  }, [])
-
   return (
     <div className="container-lg">
       {/* Hero Section */}
@@ -45,36 +33,11 @@ export default function Home() {
                 </NeuButton>
               </div>
             </div>
-            <div className="flex-1 flex justify-center">
-              <div className="w-48 h-48 md:w-64 md:h-64 neu-circle dark:dark-neu-circle rounded-full flex items-center justify-center overflow-hidden">
-                <div className="relative h-24 w-24 md:h-32 md:w-32 flex items-center justify-center">
-                  {textOptions.map((text, index) => (
-                    <div
-                      key={index}
-                      className={`absolute text-6xl md:text-7xl font-bold transition-all duration-500 ease-in-out ${
-                        index === textIndex
-                          ? 'opacity-100 scale-100 blur-0'
-                          : 'opacity-0 scale-75 blur-sm'
-                      }`}
-                      style={{
-                        color: 'transparent',
-                        background:
-                          'linear-gradient(to bottom, rgba(139, 92, 246, 0.5), rgba(99, 102, 241, 0.5))',
-                        WebkitBackgroundClip: 'text',
-                        backgroundClip: 'text',
-                        textShadow:
-                          '1px 1px 1px rgba(255, 255, 255, 0.3), -1px -1px 1px rgba(0, 0, 0, 0.2)',
-                        filter: 'contrast(1.2)',
-                        transform: `translateY(1px) ${index === textIndex ? 'rotate(0deg)' : 'rotate(' + (index - textIndex) * 15 + 'deg)'}`,
-                        transformOrigin: 'center center',
-                      }}
-                    >
-                      {text}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+
+            {/* Rotating tech badge component */}
+            <RotatingTechBadge
+              textOptions={['JS', 'TS', 'DB', 'GQL', 'API', 'AI']}
+            />
           </div>
         </NeuContainer>
       </section>

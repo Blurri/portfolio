@@ -9,7 +9,10 @@
     "start": "next start",
     "lint": "next lint",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "generate:types": "payload generate:types",
+    "generate:importmap": "payload generate:importmap",
+    "seed": "PAYLOAD_SEED=true next dev --turbopack"
   },
   "dependencies": {
     "@ai-sdk/openai": "1.2.0",
@@ -58,6 +61,7 @@
     "lucide-react": "0.477.0",
     "next": "15.2.1",
     "next-themes": "0.4.4",
+    "nuqs": "^2.4.1",
     "payload": "^3.28.1",
     "react": "19.0.0",
     "react-day-picker": "9.5.1",
