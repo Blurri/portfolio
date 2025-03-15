@@ -1,6 +1,5 @@
 import type { Payload } from 'payload'
 import type { Category, Technology } from '../payload-types'
-
 import { devUser } from './helpers/credentials'
 
 /**
@@ -142,8 +141,24 @@ export const seed = async (
  */
 async function resetDatabase(payload: Payload): Promise<void> {
   // Define the order of collections to delete
-  // Delete dependent collections first (technologies) before their references (categories)
-  const collectionOrder = ['technologies', 'categories', 'users'] as const
+  // Delete dependent collections first before their references
+  const collectionOrder = [
+    'blog',
+    'testimonials',
+    'page-content',
+    'contact',
+    'social-links',
+    'projects',
+    'experience',
+    'technologies',
+    'media',
+    'categories',
+    'settings',
+    'users',
+  ] as const
+
+  // Type to ensure we only use valid collection names
+  type ValidCollection = (typeof collectionOrder)[number]
 
   // Delete collections in the specified order
   for (const collectionName of collectionOrder) {
@@ -155,36 +170,41 @@ async function resetDatabase(payload: Payload): Promise<void> {
 
       // Continue fetching and deleting documents until no more remain
       while (hasMoreDocs) {
-        // Find documents in the collection (always fetch first page as we're deleting them)
-        const { docs, totalDocs } = await payload.find({
-          collection: collectionName,
-          limit: 100, // Use a smaller batch size for better performance
-          page: 1, // Always get the first page as we're deleting documents
-        })
-
-        // If no documents found, we're done with this collection
-        if (docs.length === 0) {
-          hasMoreDocs = false
-          break
-        }
-
-        // Delete each document in the current batch
-        for (const doc of docs) {
-          await payload.delete({
-            collection: collectionName,
-            id: doc.id,
+        try {
+          // Find documents in the collection (always fetch first page as we're deleting them)
+          const { docs, totalDocs } = await payload.find({
+            collection: collectionName as ValidCollection,
+            limit: 100, // Use a smaller batch size for better performance
+            page: 1, // Always get the first page as we're deleting documents
           })
-          deletedCount++
-        }
 
-        // Log progress for large collections
-        console.log(
-          `Progress: Deleted ${deletedCount} documents from ${collectionName}...`,
-        )
+          // If no documents found, we're done with this collection
+          if (docs.length === 0) {
+            hasMoreDocs = false
+            break
+          }
 
-        // Check if we've deleted all documents
-        if (deletedCount >= totalDocs) {
-          hasMoreDocs = false
+          // Delete each document in the current batch
+          for (const doc of docs) {
+            await payload.delete({
+              collection: collectionName as ValidCollection,
+              id: doc.id,
+            })
+            deletedCount++
+          }
+
+          // Log progress for large collections
+          console.log(
+            `Progress: Deleted ${deletedCount} documents from ${collectionName}...`,
+          )
+
+          // Check if we've deleted all documents
+          if (deletedCount >= totalDocs) {
+            hasMoreDocs = false
+          }
+        } catch (error) {
+          console.error(`Error processing batch for ${collectionName}:`, error)
+          hasMoreDocs = false // Stop on error
         }
       }
 
@@ -201,7 +221,7 @@ async function resetDatabase(payload: Payload): Promise<void> {
 }
 
 // Helper function to seed a user if it doesn't exist
-async function seedUser(payload: Payload) {
+async function seedUser(payload: Payload): Promise<void> {
   const { totalDocs } = await payload.find({
     collection: 'users',
     limit: 0,
@@ -215,7 +235,10 @@ async function seedUser(payload: Payload) {
   if (totalDocs === 0) {
     await payload.create({
       collection: 'users',
-      data: devUser,
+      data: {
+        ...devUser,
+        role: devUser.role || 'admin',
+      },
     })
   }
 }
@@ -226,26 +249,31 @@ async function seedCategory(
   name: string,
   order: number,
 ): Promise<Category | null> {
-  const { docs: existingCategories } = await payload.find({
-    collection: 'categories',
-    where: {
-      name: {
-        equals: name,
-      },
-    },
-  })
-
-  if (existingCategories.length === 0) {
-    return await payload.create({
+  try {
+    const { docs: existingCategories } = await payload.find({
       collection: 'categories',
-      data: {
-        name,
-        order,
+      where: {
+        name: {
+          equals: name,
+        },
       },
     })
-  }
 
-  return existingCategories[0] || null
+    if (existingCategories.length === 0) {
+      return await payload.create({
+        collection: 'categories',
+        data: {
+          name,
+          order,
+        },
+      })
+    }
+
+    return existingCategories[0] || null
+  } catch (error) {
+    console.error(`Error seeding category ${name}:`, error)
+    return null
+  }
 }
 
 // Helper function to seed a technology if it doesn't exist
@@ -256,26 +284,31 @@ async function seedTechnology(
   categoryId: number,
   order: number,
 ): Promise<Technology | null> {
-  const { docs: existingTechnologies } = await payload.find({
-    collection: 'technologies',
-    where: {
-      name: {
-        equals: name,
-      },
-    },
-  })
-
-  if (existingTechnologies.length === 0) {
-    return await payload.create({
+  try {
+    const { docs: existingTechnologies } = await payload.find({
       collection: 'technologies',
-      data: {
-        name,
-        years,
-        category: categoryId,
-        order,
+      where: {
+        name: {
+          equals: name,
+        },
       },
     })
-  }
 
-  return existingTechnologies[0] || null
+    if (existingTechnologies.length === 0) {
+      return await payload.create({
+        collection: 'technologies',
+        data: {
+          name,
+          years,
+          category: categoryId,
+          order,
+        },
+      })
+    }
+
+    return existingTechnologies[0] || null
+  } catch (error) {
+    console.error(`Error seeding technology ${name}:`, error)
+    return null
+  }
 }
