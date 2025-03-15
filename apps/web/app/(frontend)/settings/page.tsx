@@ -1,9 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Check, Moon, Sun } from 'lucide-react'
+import { Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
-import { cn } from '@/lib/utils'
 import { Heading, Text } from '@workspace/ui/components/typography'
 import { NeuButton } from '@workspace/ui/components/neu-button'
 import { NeuToggle } from '@workspace/ui/components/neu-toggle'
@@ -16,7 +15,6 @@ export default function SettingsPage() {
   // Avoid hydration mismatch
   useEffect(() => {
     setMounted(true)
-
     // Check for saved animation preference
     const savedAnimPref = localStorage.getItem('animations-enabled')
     if (savedAnimPref !== null) {
@@ -116,91 +114,6 @@ export default function SettingsPage() {
               onCheckedChange={toggleAnimations}
               aria-label="Toggle animations"
             />
-          </div>
-        </div>
-      </div>
-
-      <div className="neu-flat dark:dark-neu-flat rounded-2xl p-6 md:p-8">
-        <Heading
-          level="h2"
-          dataSectionTitle="Content Preferences"
-          className="mb-6"
-        >
-          Content Preferences
-        </Heading>
-
-        <div className="space-y-6">
-          {/* Technical Level */}
-          <div>
-            <Heading
-              level="h3"
-              dataSectionTitle="Technical Content Level"
-              className="mb-3"
-            >
-              Technical Content Level
-            </Heading>
-            <Text variant="muted" size="sm" className="mb-4">
-              Adjust the technical depth of content
-            </Text>
-            <div className="flex flex-wrap gap-3">
-              {['Beginner', 'Intermediate', 'Advanced', 'Expert'].map(
-                (level, index) => (
-                  <NeuButton
-                    key={index}
-                    variant={index === 2 ? 'pressed' : 'default'}
-                    className={
-                      index === 2 ? 'text-purple-600 dark:text-purple-400' : ''
-                    }
-                  >
-                    {level}
-                  </NeuButton>
-                ),
-              )}
-            </div>
-          </div>
-
-          {/* Content Categories */}
-          <div>
-            <Heading
-              level="h3"
-              dataSectionTitle="Content Categories"
-              className="mb-3"
-            >
-              Content Categories
-            </Heading>
-            <Text variant="muted" size="sm" className="mb-4">
-              Select which types of content to display
-            </Text>
-            <div className="space-y-3">
-              {[
-                {
-                  id: 'frontend',
-                  label: 'Frontend Development',
-                  checked: true,
-                },
-                { id: 'backend', label: 'Backend Development', checked: true },
-                { id: 'devops', label: 'DevOps & Cloud', checked: true },
-                { id: 'career', label: 'Career Journey', checked: true },
-              ].map((category) => (
-                <div key={category.id} className="flex items-center gap-3">
-                  <div
-                    className={cn(
-                      'w-6 h-6 rounded-md flex items-center justify-center',
-                      category.checked
-                        ? 'bg-purple-500 dark:bg-purple-600'
-                        : 'neu-inset dark:dark-neu-inset',
-                    )}
-                  >
-                    {category.checked && (
-                      <Check size={14} className="text-white" />
-                    )}
-                  </div>
-                  <Text className="text-gray-700 dark:text-gray-300">
-                    {category.label}
-                  </Text>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </div>
