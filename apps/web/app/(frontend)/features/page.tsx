@@ -87,8 +87,8 @@ export default async function FeaturesPage() {
           Features Showcase
         </Heading>
         <Text size="lg">
-          Explore my projects, technical capabilities, and development approach
-          through interactive examples.
+          Explore my projects, technical capabilities through interactive
+          examples.
         </Text>
       </NeuContainer>
 

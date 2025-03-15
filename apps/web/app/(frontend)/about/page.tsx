@@ -24,21 +24,27 @@ export default function AboutPage() {
         </Heading>
         <div className="space-y-6">
           <Text size="lg">
-            I'm a senior software developer with over 15 years of experience
-            building web applications and systems. My journey began with
-            JavaScript and has evolved through various technologies and
-            frameworks, always staying at the forefront of web development.
+            From wielding metal to wielding code - I started my journey as a
+            certified metalworker before discovering my true passion in software
+            development. Turns out, crafting elegant code solutions is just as
+            satisfying as crafting metal, just with fewer sparks flying around!
           </Text>
           <Text>
-            Throughout my career, I've focused on delivering high-quality
-            applications that solve real business problems. I've worked in agile
-            environments, leading teams and mentoring junior developers while
-            maintaining a hands-on approach to coding and architecture.
+            When I'm not geeking out over the latest tech, you'll find me diving
+            into fascinating projects like building 3D galleries, creating
+            virtual reality experiences, or helping save the planet with CO2
+            tracking apps. I love turning complex problems into elegant
+            solutions, preferably with a good cup of coffee in hand and some AI
+            tools as my trusty sidekicks.
           </Text>
           <Text>
-            My technical expertise spans the entire stack, from frontend
-            development with React and Next.js to backend systems with Node.js,
-            and DevOps with Google Cloud Platform and Kubernetes.
+            These days, I spend my time crafting web applications, experimenting
+            with AI tools, and occasionally disappearing into VR worlds I help
+            create. I believe in writing code that not only works great but is
+            also a joy to work with - because life's too short for messy
+            codebases! Whether it's mentoring fellow developers or building the
+            next cool feature, I bring both expertise and enthusiasm to
+            everything I do.
           </Text>
         </div>
       </div>

@@ -69,7 +69,6 @@ export interface Config {
     categories: Category;
     technologies: Technology;
     experience: Experience;
-    'page-content': PageContent;
     projects: Project;
     testimonials: Testimonial;
     media: Media;
@@ -86,7 +85,6 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     technologies: TechnologiesSelect<false> | TechnologiesSelect<true>;
     experience: ExperienceSelect<false> | ExperienceSelect<true>;
-    'page-content': PageContentSelect<false> | PageContentSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -405,91 +403,6 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "page-content".
- */
-export interface PageContent {
-  id: number;
-  /**
-   * Name of this content block (for admin reference)
-   */
-  title: string;
-  /**
-   * Unique identifier for this content block (e.g., "home-hero")
-   */
-  slug: string;
-  /**
-   * Which section of the site this content belongs to
-   */
-  section: 'home' | 'about' | 'features' | 'contact' | 'global';
-  /**
-   * Main content for this section
-   */
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  /**
-   * Optional subtitle or tagline
-   */
-  subtitle?: string | null;
-  /**
-   * Optional image for this content block
-   */
-  image?: (number | null) | Media;
-  /**
-   * Optional call-to-action button
-   */
-  callToAction?: {
-    /**
-     * Button text
-     */
-    text?: string | null;
-    /**
-     * URL or path the button links to
-     */
-    link?: string | null;
-    /**
-     * Visual style of the button
-     */
-    style?: ('primary' | 'secondary' | 'tertiary') | null;
-  };
-  /**
-   * Display order within the section (lower numbers appear first)
-   */
-  order?: number | null;
-  /**
-   * SEO metadata for this content
-   */
-  metadata?: {
-    /**
-     * Custom page title for SEO
-     */
-    metaTitle?: string | null;
-    /**
-     * Custom page description for SEO
-     */
-    metaDescription?: string | null;
-    /**
-     * Comma-separated keywords for SEO
-     */
-    keywords?: string | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "testimonials".
  */
 export interface Testimonial {
@@ -802,10 +715,6 @@ export interface PayloadLockedDocument {
         value: number | Experience;
       } | null)
     | ({
-        relationTo: 'page-content';
-        value: number | PageContent;
-      } | null)
-    | ({
         relationTo: 'projects';
         value: number | Project;
       } | null)
@@ -918,35 +827,6 @@ export interface ExperienceSelect<T extends boolean = true> {
     | {
         highlight?: T;
         id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "page-content_select".
- */
-export interface PageContentSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  section?: T;
-  content?: T;
-  subtitle?: T;
-  image?: T;
-  callToAction?:
-    | T
-    | {
-        text?: T;
-        link?: T;
-        style?: T;
-      };
-  order?: T;
-  metadata?:
-    | T
-    | {
-        metaTitle?: T;
-        metaDescription?: T;
-        keywords?: T;
       };
   updatedAt?: T;
   createdAt?: T;

@@ -79,7 +79,7 @@ export default function TechStackClient({
                 <div
                   className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full"
                   style={{
-                    width: `${Math.min(100, (tech.years / 15) * 100)}%`,
+                    width: `${Math.min(100, (tech.years / 10) * 100)}%`,
                   }}
                 ></div>
               </div>

@@ -6,15 +6,8 @@
  */
 
 import { Experience } from './experience'
-import { PageContent } from './page-content'
 import { Projects } from './projects'
 import { Testimonials } from './testimonials'
 import { Media } from './media'
 
-export const ContentCollections = [
-  Experience,
-  PageContent,
-  Projects,
-  Testimonials,
-  Media,
-]
+export const ContentCollections = [Experience, Projects, Testimonials, Media]

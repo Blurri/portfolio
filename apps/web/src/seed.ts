@@ -142,9 +142,6 @@ export const seed = async (
   // Seed testimonials
   await seedTestimonials(payload)
 
-  // Seed page content
-  await seedPageContent(payload)
-
   console.log('✅ Database seeded successfully!')
 }
 
@@ -156,7 +153,6 @@ async function resetDatabase(payload: Payload): Promise<void> {
   // Delete dependent collections first before their references
   const collectionOrder = [
     'testimonials',
-    'page-content',
     'contact',
     'social-links',
     'projects',
@@ -829,161 +825,6 @@ async function seedTestimonials(payload: Payload): Promise<void> {
     } catch (error) {
       console.error(
         `❌ Error seeding testimonial from ${testimonialData.name}:`,
-        error,
-      )
-    }
-  }
-}
-
-/**
- * Seed page content data
- */
-async function seedPageContent(payload: Payload): Promise<void> {
-  console.log('📄 Seeding page content...')
-
-  // Define page content entries
-  const pageContentData = [
-    {
-      title: 'Home Hero',
-      slug: 'home-hero',
-      section: 'home',
-      contentText:
-        'Experienced Software Engineer specializing in modern JavaScript frameworks, CI/CD, and DevOps practices. Building scalable web and mobile applications with a focus on quality and user experience.',
-      subtitle: 'Gabor Raz – Senior Software Engineer',
-      callToAction: {
-        text: 'View My Projects',
-        link: '/projects',
-        style: 'primary',
-      },
-      order: 1,
-    },
-    {
-      title: 'About Me Introduction',
-      slug: 'about-intro',
-      section: 'about',
-      contentText:
-        "With over 10 years of experience in software development, I've worked across the full stack to deliver high-quality applications for diverse clients. My expertise spans frontend technologies like React and Next.js, backend solutions with Node.js and GraphQL, and DevOps practices with Kubernetes and Google Cloud.",
-      subtitle: 'My Journey in Software Engineering',
-      order: 1,
-    },
-    {
-      title: 'Skills Overview',
-      slug: 'skills-overview',
-      section: 'about',
-      contentText:
-        'My technical toolkit includes a wide range of modern technologies that enable me to build comprehensive solutions. I specialize in JavaScript frameworks for frontend and backend development, with additional expertise in mobile development, database management, and cloud infrastructure.',
-      subtitle: 'Technical Expertise',
-      order: 2,
-    },
-    {
-      title: 'Contact Introduction',
-      slug: 'contact-intro',
-      section: 'contact',
-      contentText:
-        "I'm always interested in hearing about new projects and opportunities. Whether you have a specific project in mind or just want to connect, feel free to reach out using the contact form below.",
-      subtitle: "Let's Connect",
-      callToAction: {
-        text: 'Send Message',
-        link: '#contact-form',
-        style: 'primary',
-      },
-      order: 1,
-    },
-    {
-      title: 'Projects Introduction',
-      slug: 'projects-intro',
-      section: 'features',
-      contentText:
-        "Browse through a selection of projects I've worked on throughout my career. These showcase my technical skills, problem-solving abilities, and the diverse range of applications I've helped build.",
-      subtitle: 'Featured Work',
-      order: 1,
-    },
-    {
-      title: 'Footer Content',
-      slug: 'footer-content',
-      section: 'global',
-      contentText:
-        '© 2025 Gabor Raz. All rights reserved. This portfolio showcases my professional work and experience as a software engineer.',
-      order: 1,
-    },
-  ]
-
-  // Create rich text content format
-  const createRichTextContent = (text: string) => ({
-    root: {
-      children: [
-        {
-          children: [
-            {
-              text,
-            },
-          ],
-          type: 'p',
-          version: 1,
-        },
-      ],
-      direction: null,
-      format: '' as const,
-      indent: 0,
-      type: 'root',
-      version: 1,
-    },
-  })
-
-  // Create or update each page content entry
-  for (const contentData of pageContentData) {
-    try {
-      const {
-        title,
-        slug,
-        section,
-        contentText,
-        subtitle,
-        callToAction,
-        order,
-      } = contentData
-
-      // Create the page content data object
-      const pageContentEntry = {
-        title,
-        slug,
-        section,
-        content: createRichTextContent(contentText),
-        ...(subtitle ? { subtitle } : {}),
-        ...(callToAction ? { callToAction } : {}),
-        order,
-      }
-
-      // Check if the page content already exists
-      const { docs: existingContent } = await payload.find({
-        collection: 'page-content',
-        where: {
-          slug: {
-            equals: slug,
-          },
-        },
-      })
-
-      if (existingContent.length === 0) {
-        await payload.create({
-          collection: 'page-content',
-          data: pageContentEntry,
-        })
-        console.log(`✅ Created page content: ${title}`)
-      } else {
-        const id = existingContent[0]?.id
-        if (id) {
-          await payload.update({
-            collection: 'page-content',
-            id,
-            data: pageContentEntry,
-          })
-          console.log(`🔄 Updated page content: ${title}`)
-        }
-      }
-    } catch (error) {
-      console.error(
-        `❌ Error seeding page content ${contentData.title}:`,
         error,
       )
     }

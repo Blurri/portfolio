@@ -15,14 +15,17 @@ export default function Home() {
             <div className="flex-1">
               <Heading
                 level="h1"
-                dataSectionTitle="Senior Software Developer"
+                dataSectionTitle="Senior Software Engineer"
                 className="mb-4"
               >
-                Senior Software Developer
+                Senior Software Engineer
               </Heading>
               <Text size="lg" className="mb-6">
-                With over 15 years of experience building modern web
-                applications and scalable systems
+                Swiss-based fullstack developer with expertise in modern
+                JavaScript frameworks and cloud technologies. Specializing in
+                React ecosystems, GraphQL APIs, and DevOps practices with a
+                proven track record of delivering scalable solutions at Panter
+                AG and beyond.
               </Text>
               <div className="flex flex-wrap gap-4">
                 <NeuButton href="/about" className="flex items-center gap-2">
@@ -35,9 +38,7 @@ export default function Home() {
             </div>
 
             {/* Rotating tech badge component */}
-            <RotatingTechBadge
-              textOptions={['JS', 'TS', 'DB', 'GQL', 'API', 'AI']}
-            />
+            <RotatingTechBadge textOptions={['TS', 'DB', 'GQL', 'API', 'AI']} />
           </div>
         </NeuContainer>
       </section>
@@ -127,39 +128,40 @@ export default function Home() {
 
             {[
               {
-                year: '2008-2010',
-                tech: 'JavaScript & jQuery',
+                year: '2006-2010',
+                tech: 'Career Transition',
                 description:
-                  'Started career with JavaScript and jQuery development',
+                  'Started as a Certified Metalworker, building foundation for precision and attention to detail',
               },
               {
                 year: '2011-2013',
-                tech: 'Flash & Early SPA',
+                tech: 'Web & iOS Development',
                 description:
-                  'Worked with Flash and early single-page applications',
+                  'Began software development journey with WebObjects (Java) and iOS development at Rucotec',
+              },
+              {
+                year: '2013-2014',
+                tech: 'Enterprise Development',
+                description:
+                  'Worked with VB.Net and iOS development at DWA AG, focusing on enterprise solutions',
               },
               {
                 year: '2014-2016',
-                tech: 'Angular & React',
+                tech: 'Full Stack Development',
                 description:
-                  'Transitioned to Angular, then became an early React adopter',
+                  'Expanded skills to Java, PHP, JavaScript, and Swift at PM Medici, specializing in location-based iOS applications',
               },
               {
-                year: '2017-2019',
-                tech: 'React & Meteor',
+                year: '2016-2020',
+                tech: 'Modern Web Frameworks',
                 description:
-                  'Specialized in React with Meteor for full-stack JavaScript',
+                  'Mastered React, Vue.js, and Meteor.js at Panter AG, building scalable web applications',
               },
               {
-                year: '2020-2022',
-                tech: 'GraphQL & Next.js',
+                year: '2020-Present',
+                tech: 'Cloud & Modern Stack',
                 description:
-                  'Early adoption of GraphQL and Next.js for modern web apps',
-              },
-              {
-                year: '2023-Present',
-                tech: 'Cloud & DevOps',
-                description: 'Focus on Google Cloud, Kubernetes, and Cloud Run',
+                  'Advanced to Next.js, GraphQL, Kubernetes, and Google Cloud, leading complex fullstack projects',
               },
             ].map((item, index) => (
               <div key={index} className="relative pl-10 pb-8">
@@ -185,9 +187,6 @@ export default function Home() {
 
       {/* Tech Stack */}
       <section data-section-title="Technology Stack">
-        <Heading level="h2" dataSectionTitle="Technology Stack">
-          Technology Stack
-        </Heading>
         <TechStack />
       </section>
     </div>

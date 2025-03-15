@@ -3,6 +3,7 @@ import payloadConfig from '../payload.config'
 import { Category } from '@/payload-types'
 import TechStackClient from './tech-stack-client'
 import { filterPopulated, isTechnology } from '@/utils/type-guards'
+import { Heading } from '@workspace/ui/components/typography'
 
 /**
  * Server component that fetches and processes technology categories and their technologies
@@ -50,7 +51,9 @@ export default async function TechStack() {
 
     return (
       <div className="container mx-auto py-12">
-        <h2 className="text-3xl font-bold mb-8 text-center">Tech Stack</h2>
+        <Heading level="h2" dataSectionTitle="Technology Stack">
+          Technology Stack
+        </Heading>
         <TechStackClient
           categories={categories}
           defaultCategoryName={defaultCategoryName}

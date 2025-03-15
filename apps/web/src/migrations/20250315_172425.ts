@@ -2,9 +2,7 @@ import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
-   CREATE TYPE "public"."enum_page_content_section" AS ENUM('home', 'about', 'features', 'contact', 'global');
-  CREATE TYPE "public"."enum_page_content_call_to_action_style" AS ENUM('primary', 'secondary', 'tertiary');
-  CREATE TYPE "public"."enum_projects_links_type" AS ENUM('live', 'github', 'docs', 'demo', 'other');
+   CREATE TYPE "public"."enum_projects_links_type" AS ENUM('live', 'github', 'docs', 'demo', 'other');
   CREATE TYPE "public"."enum_projects_code_snippets_language" AS ENUM('javascript', 'typescript', 'html', 'css', 'python', 'java', 'csharp', 'php', 'ruby', 'go', 'swift', 'kotlin', 'rust', 'other');
   CREATE TYPE "public"."enum_projects_status" AS ENUM('draft', 'in-progress', 'completed', 'published', 'archived');
   CREATE TYPE "public"."enum_projects_project_type" AS ENUM('web-app', 'mobile-app', 'desktop-app', 'api', 'library', 'game', 'other');
@@ -66,25 +64,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"path" varchar NOT NULL,
   	"technologies_id" integer,
   	"projects_id" integer
-  );
-  
-  CREATE TABLE IF NOT EXISTS "page_content" (
-  	"id" serial PRIMARY KEY NOT NULL,
-  	"title" varchar NOT NULL,
-  	"slug" varchar NOT NULL,
-  	"section" "enum_page_content_section" NOT NULL,
-  	"content" jsonb NOT NULL,
-  	"subtitle" varchar,
-  	"image_id" integer,
-  	"call_to_action_text" varchar,
-  	"call_to_action_link" varchar,
-  	"call_to_action_style" "enum_page_content_call_to_action_style" DEFAULT 'primary',
-  	"order" numeric DEFAULT 0,
-  	"metadata_meta_title" varchar,
-  	"metadata_meta_description" varchar,
-  	"metadata_keywords" varchar,
-  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
   
   CREATE TABLE IF NOT EXISTS "projects_gallery" (
@@ -289,7 +268,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"categories_id" integer,
   	"technologies_id" integer,
   	"experience_id" integer,
-  	"page_content_id" integer,
   	"projects_id" integer,
   	"testimonials_id" integer,
   	"media_id" integer,
@@ -367,12 +345,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   
   DO $$ BEGIN
    ALTER TABLE "experience_rels" ADD CONSTRAINT "experience_rels_projects_fk" FOREIGN KEY ("projects_id") REFERENCES "public"."projects"("id") ON DELETE cascade ON UPDATE no action;
-  EXCEPTION
-   WHEN duplicate_object THEN null;
-  END $$;
-  
-  DO $$ BEGIN
-   ALTER TABLE "page_content" ADD CONSTRAINT "page_content_image_id_media_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   EXCEPTION
    WHEN duplicate_object THEN null;
   END $$;
@@ -498,12 +470,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   END $$;
   
   DO $$ BEGIN
-   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_page_content_fk" FOREIGN KEY ("page_content_id") REFERENCES "public"."page_content"("id") ON DELETE cascade ON UPDATE no action;
-  EXCEPTION
-   WHEN duplicate_object THEN null;
-  END $$;
-  
-  DO $$ BEGIN
    ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_projects_fk" FOREIGN KEY ("projects_id") REFERENCES "public"."projects"("id") ON DELETE cascade ON UPDATE no action;
   EXCEPTION
    WHEN duplicate_object THEN null;
@@ -576,10 +542,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX IF NOT EXISTS "experience_rels_path_idx" ON "experience_rels" USING btree ("path");
   CREATE INDEX IF NOT EXISTS "experience_rels_technologies_id_idx" ON "experience_rels" USING btree ("technologies_id");
   CREATE INDEX IF NOT EXISTS "experience_rels_projects_id_idx" ON "experience_rels" USING btree ("projects_id");
-  CREATE UNIQUE INDEX IF NOT EXISTS "page_content_slug_idx" ON "page_content" USING btree ("slug");
-  CREATE INDEX IF NOT EXISTS "page_content_image_idx" ON "page_content" USING btree ("image_id");
-  CREATE INDEX IF NOT EXISTS "page_content_updated_at_idx" ON "page_content" USING btree ("updated_at");
-  CREATE INDEX IF NOT EXISTS "page_content_created_at_idx" ON "page_content" USING btree ("created_at");
   CREATE INDEX IF NOT EXISTS "projects_gallery_order_idx" ON "projects_gallery" USING btree ("_order");
   CREATE INDEX IF NOT EXISTS "projects_gallery_parent_id_idx" ON "projects_gallery" USING btree ("_parent_id");
   CREATE INDEX IF NOT EXISTS "projects_gallery_image_idx" ON "projects_gallery" USING btree ("image_id");
@@ -632,7 +594,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_categories_id_idx" ON "payload_locked_documents_rels" USING btree ("categories_id");
   CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_technologies_id_idx" ON "payload_locked_documents_rels" USING btree ("technologies_id");
   CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_experience_id_idx" ON "payload_locked_documents_rels" USING btree ("experience_id");
-  CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_page_content_id_idx" ON "payload_locked_documents_rels" USING btree ("page_content_id");
   CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_projects_id_idx" ON "payload_locked_documents_rels" USING btree ("projects_id");
   CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_testimonials_id_idx" ON "payload_locked_documents_rels" USING btree ("testimonials_id");
   CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_media_id_idx" ON "payload_locked_documents_rels" USING btree ("media_id");
@@ -651,11 +612,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX IF NOT EXISTS "payload_migrations_created_at_idx" ON "payload_migrations" USING btree ("created_at");`)
 }
 
-export async function down({
-  db,
-  payload,
-  req,
-}: MigrateDownArgs): Promise<void> {
+export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
   await db.execute(sql`
    DROP TABLE "categories" CASCADE;
   DROP TABLE "categories_rels" CASCADE;
@@ -663,7 +620,6 @@ export async function down({
   DROP TABLE "experience_highlights" CASCADE;
   DROP TABLE "experience" CASCADE;
   DROP TABLE "experience_rels" CASCADE;
-  DROP TABLE "page_content" CASCADE;
   DROP TABLE "projects_gallery" CASCADE;
   DROP TABLE "projects_links" CASCADE;
   DROP TABLE "projects_code_snippets" CASCADE;
@@ -682,8 +638,6 @@ export async function down({
   DROP TABLE "payload_preferences" CASCADE;
   DROP TABLE "payload_preferences_rels" CASCADE;
   DROP TABLE "payload_migrations" CASCADE;
-  DROP TYPE "public"."enum_page_content_section";
-  DROP TYPE "public"."enum_page_content_call_to_action_style";
   DROP TYPE "public"."enum_projects_links_type";
   DROP TYPE "public"."enum_projects_code_snippets_language";
   DROP TYPE "public"."enum_projects_status";
