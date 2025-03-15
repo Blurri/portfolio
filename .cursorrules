@@ -1,0 +1,91 @@
+# Cursor Rules for Portfolio Project
+
+# Prevent any types
+rule "no-any-types" {
+  description = "Avoid using 'any' type in TypeScript code"
+  pattern = ":\\s*any\\b|<any>|as\\s+any"
+  message = "Avoid using 'any' type. Use proper type definitions or unknown/Record<string, unknown> instead."
+  severity = "warning"
+}
+
+# Enforce type annotations for function parameters
+rule "typed-function-params" {
+  description = "Ensure function parameters have type annotations"
+  pattern = "\\(([^:)]+)\\)\\s*=>"
+  message = "Function parameters should have type annotations"
+  severity = "warning"
+  exclude = ["node_modules", "dist", ".next"]
+}
+
+# Enforce type annotations for function returns
+rule "typed-function-returns" {
+  description = "Ensure functions have return type annotations"
+  pattern = "function\\s+\\w+\\([^)]*\\)\\s*\\{"
+  message = "Functions should have return type annotations"
+  severity = "warning"
+  exclude = ["node_modules", "dist", ".next"]
+}
+
+# Enforce proper typing for Payload data
+rule "payload-data-typing" {
+  description = "Ensure Payload data is properly typed"
+  pattern = "\\.docs\\s*\\.filter\\(\\([^)]+\\)\\s*=>\\s*!!"
+  message = "Use type predicates when filtering Payload data (e.g., (item): item is ItemType => !!item)"
+  severity = "warning"
+}
+
+# Enforce use of type guard utilities
+rule "use-type-guard-utilities" {
+  description = "Encourage use of type guard utilities for PayloadCMS relationships"
+  pattern = "\\.(filter|map)\\(\\([^)]+\\)\\s*=>\\s*(typeof|'id' in)"
+  message = "Consider using our type guard utilities (e.g., filterPopulated, isTechnology) for handling PayloadCMS relationships"
+  severity = "warning"
+}
+
+# Prevent direct array access without null checks
+rule "safe-array-access" {
+  description = "Ensure arrays are checked before accessing"
+  pattern = "\\.(map|filter|forEach|reduce|some|every)\\(\\s*\\([^)]*\\)\\s*=>\\s*[^{]*\\)"
+  message = "Ensure arrays are checked with Array.isArray() before using array methods"
+  severity = "warning"
+}
+
+# Enforce error handling in async functions
+rule "async-error-handling" {
+  description = "Ensure async functions have proper error handling"
+  pattern = "export\\s+(default\\s+)?async\\s+function\\s+[^{]+\\{(?![^}]*try)"
+  message = "Async functions should include try/catch blocks for error handling"
+  severity = "warning"
+}
+
+# Enforce proper PayloadCMS initialization
+rule "payload-initialization" {
+  description = "Ensure PayloadCMS is initialized correctly"
+  pattern = "await\\s+getPayload\\(\\s*\\{\\s*config:\\s*[^}]+\\}\\s*\\)"
+  message = "Good job initializing PayloadCMS correctly!"
+  severity = "info"
+}
+
+# Enforce proper depth parameter in PayloadCMS queries
+rule "payload-depth-parameter" {
+  description = "Ensure depth parameter is specified in PayloadCMS queries"
+  pattern = "payload\\.find\\(\\{[^}]*collection:[^}]*\\}\\)"
+  message = "Consider specifying a 'depth' parameter in PayloadCMS queries to control relationship population"
+  severity = "warning"
+}
+
+# Enforce server component typing
+rule "server-component-return-type" {
+  description = "Ensure server components have proper return types"
+  pattern = "export\\s+default\\s+async\\s+function\\s+[^(]+\\([^)]*\\)\\s*\\{"
+  message = "Server components should specify a return type (e.g., Promise<JSX.Element>)"
+  severity = "warning"
+}
+
+# Enforce proper client component props typing
+rule "client-component-props-typing" {
+  description = "Ensure client components have properly typed props"
+  pattern = "'use client'[\\s\\S]*export\\s+default\\s+function\\s+[^(]+\\((?:(?:\\{[^}]*\\}(?:\\s*:\\s*[^{]+)?)|(?:[a-zA-Z_$][a-zA-Z0-9_$]*(?:\\s*:\\s*[^{]+)?))\\s*\\)"
+  message = "Client components should have properly typed props with a dedicated interface or type"
+  severity = "warning"
+} 

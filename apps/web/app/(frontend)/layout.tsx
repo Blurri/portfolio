@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import '@workspace/ui/globals.css'
 import Navigation from '@/components/navigation'
 import { ThemeProvider } from '@/components/theme-provider'
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
 export const metadata: Metadata = {
   title: 'Senior Developer Portfolio',
@@ -27,7 +28,7 @@ export default function RootLayout({
           <div className="min-h-screen transition-colors duration-300 bg-neu-background dark:bg-dark-neu-background">
             <Navigation />
             <main className="pt-20 pb-10 px-4 md:px-8 lg:px-12">
-              {children}
+              <NuqsAdapter>{children}</NuqsAdapter>
             </main>
           </div>
         </ThemeProvider>

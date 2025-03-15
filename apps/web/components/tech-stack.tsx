@@ -1,84 +1,73 @@
-'use client'
+import { getPayload } from 'payload'
+import payloadConfig from '../payload.config'
+import { Category } from '@/payload-types'
+import TechStackClient from './tech-stack-client'
+import { filterPopulated, isTechnology } from '@/utils/type-guards'
 
-import { useState } from 'react'
-import { cn } from '@/lib/utils'
+/**
+ * Server component that fetches and processes technology categories and their technologies
+ * from Payload CMS, then passes the processed data to the client component.
+ *
+ * @returns JSX.Element - The rendered component
+ */
+export default async function TechStack(): Promise<JSX.Element> {
+  try {
+    // Initialize Payload
+    const payload = await getPayload({ config: payloadConfig })
 
-const technologies = {
-  Frontend: [
-    { name: 'JavaScript', years: 15 },
-    { name: 'React', years: 8 },
-    { name: 'Next.js', years: 5 },
-    { name: 'TypeScript', years: 6 },
-    { name: 'HTML/CSS', years: 15 },
-    { name: 'jQuery', years: 10 },
-  ],
-  Backend: [
-    { name: 'Node.js', years: 10 },
-    { name: 'GraphQL', years: 5 },
-    { name: 'REST APIs', years: 12 },
-    { name: 'Express', years: 8 },
-    { name: 'MongoDB', years: 7 },
-    { name: 'PostgreSQL', years: 6 },
-  ],
-  DevOps: [
-    { name: 'Google Cloud', years: 4 },
-    { name: 'Kubernetes', years: 3 },
-    { name: 'Docker', years: 5 },
-    { name: 'CI/CD', years: 6 },
-    { name: 'Git', years: 12 },
-    { name: 'Linux', years: 10 },
-  ],
-}
+    // Fetch categories sorted by order
+    const categoriesResponse = await payload.find({
+      collection: 'categories',
+      sort: 'order',
+      depth: 1, // Fetch technologies as well
+    })
 
-export default function TechStack() {
-  const [activeCategory, setActiveCategory] = useState('Frontend')
+    // Process categories to ensure they have the correct structure
+    const categories = categoriesResponse.docs
+      .filter(
+        (category): category is Category =>
+          // Filter out null or undefined values
+          !!category,
+      )
+      .map((category: Category) => {
+        // Get technologies for this category using our utility function
+        const technologies = filterPopulated(
+          category.technologies,
+          isTechnology,
+        ).sort((a, b) => {
+          // Sort by years in descending order
+          return (b.years || 0) - (a.years || 0)
+        })
 
-  return (
-    <div>
-      <div className="flex flex-wrap gap-3 mb-6">
-        {Object.keys(technologies).map((category) => (
-          <button
-            key={category}
-            onClick={() => setActiveCategory(category)}
-            className={cn(
-              'px-4 py-2 rounded-xl',
-              activeCategory === category
-                ? 'neu-pressed dark:dark-neu-pressed text-purple-600 dark:text-purple-400'
-                : 'neu-button dark:dark-neu-button text-gray-700 dark:text-gray-300',
-            )}
-          >
-            {category}
-          </button>
-        ))}
+        // Return the processed category
+        return {
+          ...category,
+          technologies,
+        }
+      })
+
+    // Get the default category name (first category or empty string)
+    const defaultCategoryName =
+      categories.length > 0 && categories[0]?.name ? categories[0].name : ''
+
+    return (
+      <div className="container mx-auto py-12">
+        <h2 className="text-3xl font-bold mb-8 text-center">Tech Stack</h2>
+        <TechStackClient
+          categories={categories}
+          defaultCategoryName={defaultCategoryName}
+        />
       </div>
-
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        {technologies[activeCategory as keyof typeof technologies].map(
-          (tech, index) => (
-            <div
-              key={index}
-              className="neu-pressed dark:dark-neu-pressed rounded-xl p-4"
-            >
-              <div className="flex justify-between items-center mb-2">
-                <span className="font-medium text-gray-800 dark:text-gray-100">
-                  {tech.name}
-                </span>
-                <span className="text-sm text-purple-600 dark:text-purple-400">
-                  {tech.years} yrs
-                </span>
-              </div>
-              <div className="h-2 rounded-full neu-inset dark:dark-neu-inset overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full"
-                  style={{
-                    width: `${Math.min(100, (tech.years / 15) * 100)}%`,
-                  }}
-                ></div>
-              </div>
-            </div>
-          ),
-        )}
+    )
+  } catch (error) {
+    console.error('Error fetching tech stack data:', error)
+    return (
+      <div className="container mx-auto py-12">
+        <h2 className="text-3xl font-bold mb-8 text-center">Tech Stack</h2>
+        <div className="text-center py-8 text-gray-500">
+          Unable to load tech stack data. Please try again later.
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 }

@@ -1,0 +1,89 @@
+# CodeRabbit Configuration
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+# General settings
+language: "en-US"
+early_access: false
+
+# Custom tone instructions for the AI reviewer
+tone_instructions: 'You are an expert code reviewer focusing on TypeScript and React best practices. Provide concise, actionable feedback with clear examples when needed. Be constructive and focus on code quality, type safety, and performance.'
+
+# Review settings
+reviews:
+  # Profile setting (determines overall review style)
+  profile: "chill"  # Options: strict, balanced, chill
+  
+  # Enable auto-resolving of previous reviews
+  auto_resolve:
+    enabled: true
+    resolution_comment: "This issue has been resolved in the latest changes."
+    resolve_outdated: true  # Resolve comments on outdated code
+    resolve_fixed: true     # Resolve comments where the issue appears fixed
+  
+  # Review comment settings
+  comment_summary: true     # Provide a summary of all comments
+  path_filters:
+    - "**/*.ts"
+    - "**/*.tsx"
+    - "**/*.js"
+    - "**/*.jsx"
+    - "**/*.md"
+    - ".cursorrules"
+  
+  # Exclude certain paths from reviews
+  path_excludes:
+    - "node_modules/**"
+    - ".next/**"
+    - "dist/**"
+    - "build/**"
+  
+  # Auto-review settings
+  auto_review:
+    enabled: true
+    ignore_title_keywords:
+      - "WIP"
+      - "DO NOT MERGE"
+    drafts: false  # Don't auto-review draft PRs
+    base_branches: ["main", "develop"]  # Only auto-review PRs targeting these branches
+  
+  # Additional review settings
+  request_changes_workflow: false  # Don't request changes formally
+  high_level_summary: true  # Include high-level summary
+  review_status: true  # Show review status
+  collapse_walkthrough: true  # Collapse detailed walkthrough by default
+  poem: false  # Don't include poems in reviews
+  
+  # Path-specific instructions
+  path_instructions:
+    - path: "**/*.tsx"
+      instructions: |
+        Focus on React best practices, component structure, and proper typing of props.
+        Check for potential performance issues like unnecessary re-renders.
+        Ensure proper error handling and accessibility considerations.
+    - path: "**/*.test.{ts,tsx}"
+      instructions: |
+        Ensure tests are comprehensive and cover edge cases.
+        Check for proper use of testing utilities and mocks.
+        Verify that assertions are meaningful and specific.
+  
+  # Pull request settings (moved from top-level)
+  summarize: true  # Enable summarizing of pull requests
+  
+  # Add labels based on the changes in the PR
+  labels:
+    typescript: ["**/*.ts", "**/*.tsx"]
+    documentation: ["**/*.md"]
+    configuration: ["**/*.json", "**/*.yaml", "**/*.yml", ".cursorrules"]
+  
+  # Ignore certain files in the diff
+  ignore_files:
+    - "package-lock.json"
+    - "yarn.lock"
+    - "pnpm-lock.yaml"
+  
+  # Verification settings (moved from top-level)
+  verify_fixes: true  # Enable verification of fixes
+
+# Chat settings
+chat:
+  auto_reply: true  # Enable auto-replies in PR comments 
