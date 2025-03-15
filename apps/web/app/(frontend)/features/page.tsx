@@ -6,14 +6,20 @@ import CodeTab from '../../../components/code-tab'
 import SkillsTab from '../../../components/skills-tab'
 import { getPayload } from 'payload'
 import payloadConfig from '../../../payload.config'
-import { Project, Technology } from '@/payload-types'
-import { filterPopulated, isProject, isTechnology } from '@/utils/type-guards'
+import { Project, Technology, Category } from '@/payload-types'
+import {
+  filterPopulated,
+  isProject,
+  isTechnology,
+  isCategory,
+} from '@/utils/type-guards'
 import ProjectsTabClient from '@/components/projects-tab-client'
 
 // This is a server component, so we can fetch data here
 export default async function FeaturesPage() {
   // Fetch projects data
   let projects: (Project & { technologies: Technology[] })[] = []
+  let categories: (Category & { technologies: Technology[] })[] = []
 
   try {
     // Initialize Payload
@@ -38,8 +44,35 @@ export default async function FeaturesPage() {
           technologies,
         }
       })
+
+    // Fetch categories and technologies for skills section
+    const categoriesResponse = await payload.find({
+      collection: 'categories',
+      sort: 'order',
+      depth: 1, // Fetch technologies as well
+    })
+
+    // Process categories to ensure they have the correct structure
+    categories = categoriesResponse.docs
+      .filter(isCategory)
+      .map((category: Category) => {
+        // Get technologies for this category using our utility function
+        const technologies = filterPopulated(
+          category.technologies,
+          isTechnology,
+        ).sort((a, b) => {
+          // Sort by years in descending order
+          return (b.years || 0) - (a.years || 0)
+        })
+
+        // Return the processed category
+        return {
+          ...category,
+          technologies,
+        }
+      })
   } catch (error) {
-    console.error('Error fetching project data:', error)
+    console.error('Error fetching data:', error)
   }
 
   return (
@@ -64,7 +97,7 @@ export default async function FeaturesPage() {
       <Suspense fallback={<div>Loading content...</div>}>
         <ProjectsTabClient projects={projects} />
         <CodeTab />
-        <SkillsTab />
+        <SkillsTab categories={categories} />
       </Suspense>
     </div>
   )
