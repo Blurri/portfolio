@@ -19,11 +19,10 @@ interface ExperienceClientProps {
  * Client component that displays experience data
  *
  * @param props - Component props
- * @returns JSX.Element - The rendered component
  */
 export default function ExperienceClient({
   experiences = [],
-}: ExperienceClientProps): JSX.Element {
+}: ExperienceClientProps) {
   return (
     <div className="space-y-8">
       {experiences.map((experience) => (

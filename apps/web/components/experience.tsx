@@ -10,10 +10,8 @@ import ExperienceClient from './experience-client'
 
 /**
  * Server component that fetches and processes experience data from Payload CMS
- *
- * @returns JSX.Element - The rendered component
  */
-export default async function ExperienceList(): Promise<JSX.Element> {
+export default async function ExperienceList() {
   try {
     // Initialize Payload
     const payload = await getPayload({ config: payloadConfig })

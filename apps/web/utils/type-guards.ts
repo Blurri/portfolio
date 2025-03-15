@@ -1,4 +1,4 @@
-import { Category, Experience, Technology } from '@/payload-types'
+import { Category, Experience, Project, Technology } from '@/payload-types'
 
 /**
  * Generic type guard to check if a value is a populated object with required properties
@@ -37,6 +37,14 @@ export const isCategory = (value: unknown): value is Category =>
  */
 export const isExperience = (value: unknown): value is Experience =>
   isPopulatedObject<Experience>(value, ['id', 'company', 'title', 'startDate'])
+
+/**
+ * Type guard for Project objects
+ * @param value - The value to check
+ * @returns boolean - True if the value is a Project object
+ */
+export const isProject = (value: unknown): value is Project =>
+  isPopulatedObject<Project>(value, ['id', 'title', 'slug', 'status'])
 
 /**
  * Generic type guard factory that creates type guards for any entity type
