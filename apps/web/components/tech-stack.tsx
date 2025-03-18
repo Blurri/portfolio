@@ -7,10 +7,8 @@ import { filterPopulated, isTechnology } from '@/utils/type-guards'
 /**
  * Server component that fetches and processes technology categories and their technologies
  * from Payload CMS, then passes the processed data to the client component.
- *
- * @returns JSX.Element - The rendered component
  */
-export default async function TechStack(): Promise<JSX.Element> {
+export default async function TechStack() {
   try {
     // Initialize Payload
     const payload = await getPayload({ config: payloadConfig })
